@@ -1,0 +1,18 @@
+apply from: "$rootDir/common_android_library.gradle"
+apply from: "$rootDir/maven_publish_android.gradle"
+
+android {
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    api project(":modules:viewbinding")
+
+    api "androidx.appcompat:appcompat:$vAndroidxAppCompat"
+
+    debugImplementation "androidx.fragment:fragment-testing:$vAndroidxFragment"
+}

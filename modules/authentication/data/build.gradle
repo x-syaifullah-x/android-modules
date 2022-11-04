@@ -1,0 +1,18 @@
+apply from: "$rootDir/common_android_library.gradle"
+//apply from: "$rootDir/maven_publish_android.gradle"
+
+apply plugin: "com.google.devtools.ksp"
+
+dependencies {
+    // Project
+    implementation project(":modules:authentication:domain")
+
+    // Firebase
+    api(platform("com.google.firebase:firebase-bom:$vFirebaseBom"))
+    api "com.google.firebase:firebase-auth"
+
+    // Room
+    implementation "androidx.room:room-ktx:$vAndroidxRoom" // Support the suspend function
+    api "androidx.room:room-runtime:$vAndroidxRoom"
+    ksp "androidx.room:room-compiler:$vAndroidxRoom"
+}

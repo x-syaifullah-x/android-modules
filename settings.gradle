@@ -1,0 +1,42 @@
+pluginManagement {
+    apply from: "versions.gradle"
+
+    addRepos(repositories)
+}
+
+plugins {
+    //noinspection GradlePluginVersion
+    id "com.android.application" version "$vGradle" apply false
+    //noinspection GradlePluginVersion
+    id "com.android.library" version "$vGradle" apply false
+    id "org.jetbrains.kotlin.android" version "$vKotlin" apply false
+    id "com.google.devtools.ksp" version "$vKsp" apply false
+    id "com.google.gms.google-services" version "$vComGoogleGmsGoogleServices" apply false
+}
+
+rootProject.name = "Android Modules"
+
+ArrayList<File> getAllModuleDirs(File dir) {
+    def moduleDirs = []
+    dir.listFiles(new FileFilter() {
+        @Override
+        boolean accept(File file) {
+            file.isDirectory() && !file.getName().startsWith('.')
+        }
+    }).each { moduleDir ->
+        moduleDirs << moduleDir
+        moduleDirs.addAll(getAllModuleDirs(moduleDir))
+    }
+    return moduleDirs
+}
+
+getAllModuleDirs(rootDir).each { moduleDir ->
+    def modulePath = moduleDir.getAbsolutePath().substring(rootDir.getAbsolutePath().length() + 1)
+    def end = "$modulePath".lastIndexOf("/src")
+    if (end != -1) {
+        def module = "$modulePath"
+                .substring(0, end)
+                .replaceAll("/", ":")
+        include ":$module"
+    }
+}

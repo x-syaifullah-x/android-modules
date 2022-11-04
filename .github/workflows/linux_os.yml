@@ -1,0 +1,156 @@
+name: LINUX_OS
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  code_coverage:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      API_LEVEL: ${{ matrix.api-level }}
+      ANDROID_AVD_HOME: $HOME/.config/.android
+    strategy:
+      matrix:
+        api-level:
+          # - 23
+          # - 24
+          # - 25
+          # - 26
+          # - 27
+          # - 28
+          # - 29
+          # - 30
+          # - 31
+          # - 32
+          # - 33
+          # - 34
+          - 35
+          # - 36
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup gradle directory
+        run: |
+          sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "jetbrains"
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            $ANDROID_HOME/system-images
+          key: avd-${{ matrix.api-level }}
+      - name: Start AVD
+        run: |
+          # Setup KVM Group Permission
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+          # AVD Dependencies
+          sudo apt-get update
+          sudo apt-get install --no-install-suggests --no-install-recommends mesa-vulkan-drivers libpulse0 -y
+
+          export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
+
+          yes | sdkmanager --licenses
+          sdkmanager --update
+          sdk_manager_channel="--channel=0"
+          echo y | sdkmanager --install emulator $sdk_manager_channel
+          echo y | sdkmanager --install "system-images;android-$API_LEVEL;default;x86_64" $sdk_manager_channel
+          mkdir -pv $ANDROID_AVD_HOME
+          sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $ANDROID_AVD_HOME
+          avdmanager create avd --force -n "test" -k "system-images;android-$API_LEVEL;default;x86_64" -d "17"
+          adb kill-server && adb start-server
+          if [ $API_LEVEL -lt 26 ]; then
+            emulator -avd test -metrics-collection -log-nofilter -no-boot-anim -nocache -no-snapstorage -no-snapshot -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -camera-back none -accel on -memory $(expr 1024 \* 2) -cores 2 &
+          else
+            emulator -avd test -metrics-collection -log-nofilter -no-boot-anim -nocache -no-snapstorage -no-snapshot -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -camera-back none -accel on -qemu -cpu host,kvm=on -smp $(nproc) -m $(expr 1024 \* 6) &
+          fi
+      - name: Run code coverage
+        run: |
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done;'
+          adb shell settings put global window_animation_scale 0.0
+          adb shell settings put global transition_animation_scale 0.0
+          adb shell settings put global animator_duration_scale 0.0
+          adb shell input keyevent 82
+          ./gradlew debugCodeCoverage
+#      - name: Uploading code coverage
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: code-coverage_api-level-${{ matrix.api-level }}
+#          overwrite: true
+#          path: build/jacoco_code_coverage
+#          compression-level: 9
+      - name: UPLOAD CODE COVERAGE
+        run: |
+          (
+            cd  build && tar czvf /tmp/code-coverage_api-level-${{ matrix.api-level }}.tar.gz jacoco_code_coverage
+          )
+          VERSION_NAME="v$(./gradlew -q properties | grep build_versions | sed -E 's/.*name=([^,}]+).*/\1/')"
+          gh release create "${VERSION_NAME}" --title "$VERSION_NAME" --latest=true --generate-notes || true
+          gh release upload "${VERSION_NAME}" \
+          /tmp/code-coverage_api-level-${{ matrix.api-level }}.tar.gz \
+          --clobber
+
+  publish_to_maven_local:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs:
+      - code_coverage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Gradle Directory
+        run: |
+          sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "jetbrains"
+      - name: Publish to maven local
+        run: |
+          ./gradlew clean publishToMavenLocal
+          cd ~ && tar czvf /tmp/m2.tar.gz .m2/repository/id/xxx*
+      - name: UPLOAD M2
+        run: |
+          VERSION_NAME="v$(./gradlew -q properties | grep build_versions | sed -E 's/.*name=([^,}]+).*/\1/')"
+          gh release create "${VERSION_NAME}" --title "$VERSION_NAME" --latest=true --generate-notes || true
+          gh release upload "${VERSION_NAME}" \
+            /tmp/m2.tar.gz \
+          --clobber
+
+  make_template_application:
+    runs-on: ubuntu-latest
+    needs:
+      - code_coverage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup gradle directory
+        run: |
+          sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "jetbrains"
+      - name: Assemble release
+        run: |
+          ./gradlew clean :templates:application:assembleRelease
+      - name: Uploading apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-release-unsigned.apk
+          path: templates/application/build/outputs/apk/release/application-release-unsigned.apk
