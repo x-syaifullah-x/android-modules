@@ -1,0 +1,24 @@
+{
+  "projects": {
+    "default": "x-x-x-projects"
+  },
+  "targets": {
+    "x-x-x-projects": {
+      "hosting": {
+        "x-recaptcha-x": [
+          "x-recaptcha-x"
+        ],
+        "x-x-x-projects": [
+          "x-x-x-projects"
+        ],
+        "x-link-with-phone-number-x": [
+          "x-link-with-phone-number-x"
+        ],
+        "umn-iptv-panel": [
+          "umn-iptv-panel"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

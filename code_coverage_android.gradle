@@ -1,0 +1,91 @@
+apply plugin: "jacoco"
+
+/*
+    running :   ./gradlew :module_name:debugCodeCoverage
+    result  :   build/jacoco_code_coverage/${project.name}/debugCodeCoverage/html/index.html
+*/
+
+jacoco {
+    toolVersion = "$vJacoco"
+    reportsDirectory = rootProject.layout.buildDirectory.dir("jacoco_code_coverage/${project.displayName.replace("project ':", "/").replace(":", "/").replace("'", "")}")
+}
+
+android {
+    buildTypes {
+        debug {
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+def setupJacoco(variant) {
+    def variantName = variant.name
+    def capitalizedVariantName = variantName.capitalize()
+    def testVariantNameCodeCoverageTask = "${variantName}CodeCoverage"
+
+    tasks.register(testVariantNameCodeCoverageTask, JacocoReport) {
+        group = "Reporting"
+        description = "Generate Jacoco coverage reports for the ${variantName} build"
+
+        reports {
+            html.required.set(true)
+            xml.required.set(true)
+        }
+
+        def fileFilter = [
+                '**/R.class',
+                '**/R$*.class',
+                '**/BuildConfig.*',
+                '**/Manifest*.*',
+                '**/*Test*.*',
+                '**/com/example/databinding/*',
+                '**/com/example/generated/callback/*',
+                '**/android/databinding/*',
+                '**/androidx/databinding/*',
+                '**/di/module/*',
+                '**/*MapperImpl*.*',
+                '**/*$ViewInjector*.*',
+                '**/*$ViewBinder*.*',
+                '**/*Component*.*',
+                '**/*BR*.*',
+                '**/*Module.*',
+                '**/*Dagger*.*',
+                '**/*MembersInjector*.*',
+                '**/*_Factory*.*',
+                '**/*_Provide*Factory*.*',
+                '**/*Args*.*',
+                '**/*Directions*.*'
+        ]
+
+        classDirectories.setFrom(
+                files(
+                        fileTree(dir: "${project.layout.buildDirectory.get()}/intermediates/javac/${variantName}", excludes: fileFilter),
+                        fileTree(dir: "${project.layout.buildDirectory.get()}/tmp/kotlin-classes/${variantName}", excludes: fileFilter)
+                )
+        )
+
+        sourceDirectories.setFrom(files([
+                "src/main/java",
+                "src/main/kotlin",
+                "src/${variantName}/java",
+                "src/${variantName}/kotlin"
+        ]))
+
+        executionData.setFrom(project.layout.buildDirectory.asFileTree.matching { include "**/*.exec", "**/*.ec" })
+
+        dependsOn = ["test${capitalizedVariantName}UnitTest"]
+        if (variantName.toLowerCase().contains("debug")) {
+            dependsOn += ["connected${capitalizedVariantName}AndroidTest"]
+        }
+    }
+}
+
+androidComponents.onVariants(androidComponents.selector().all()) { variant ->
+    setupJacoco(variant)
+}

@@ -1,0 +1,13 @@
+apply plugin: "java-library"
+apply plugin: "kotlin"
+
+apply from: "$rootDir/code_coverage_java.gradle"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+dependencies {
+    testImplementation project(":modules:common-test")
+}
