@@ -31,7 +31,9 @@ buildscript {
                     details.useVersion "$vAndroidxLifecycle"
                 }
                 if (details.requested.group == "androidx.test") {
-                    details.useVersion "$vAndroidxTest"
+                    if (!"${details.requested}".contains("androidx.test:annotation")) {
+                        details.useVersion "$vAndroidxTest"
+                    }
                 }
                 if (details.requested.group == "junit") {
                     details.useVersion "$vJunit"
@@ -45,6 +47,11 @@ addRepos(repositories)
 
 allprojects {
     addRepos(repositories)
+
+    String user = System.getProperty("user.name")
+    if (user == "xxx") {
+        buildDir = "/tmp/android-studio/build/${rootProject.name}/${project.name}/build"
+    }
 
     // handle warning This class can only be used with the compiler argument '-opt-in=kotlin.RequiresOptIn'
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile)
