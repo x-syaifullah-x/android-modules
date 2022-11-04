@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Please enter your email address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_edit_text_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="flagNoFullscreen"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textEmailAddress"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Please enter your password"
+            app:endIconMode="password_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout_email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_edit_text_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="flagNoFullscreen"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:indeterminate="true"
+            android:indeterminateTint="?colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout_password"
+            app:layout_constraintWidth_percent=".85"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/text_button_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar"
+            app:layout_constraintWidth_percent=".8" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_btn_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="button_login" />
+
+        <!--        <androidx.appcompat.widget.AppCompatTextView-->
+        <!--            android:id="@+id/text_view_don_t_have_an_account"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Don\'t have an account?"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/barrier_don_t_have"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/tv_sign_up"-->
+        <!--            app:layout_constraintHorizontal_bias="0.5"-->
+        <!--            app:layout_constraintHorizontal_chainStyle="packed"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/barrier_btn_sign_in" />-->
+
+        <!--        <androidx.appcompat.widget.AppCompatTextView-->
+        <!--            android:id="@+id/tv_sign_up"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:clickable="true"-->
+        <!--            android:focusable="true"-->
+        <!--            android:text=" Sign Up"-->
+        <!--            android:textColor="?android:attr/colorPrimary"-->
+        <!--            android:textStyle="bold"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/barrier_don_t_have"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.5"-->
+        <!--            app:layout_constraintStart_toEndOf="@+id/text_view_don_t_have_an_account"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/barrier_btn_sign_in"-->
+        <!--            app:layout_constraintVertical_bias="1" />-->
+
+        <!--        <androidx.constraintlayout.widget.Barrier-->
+        <!--            android:id="@+id/barrier_don_t_have"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:barrierDirection="bottom"-->
+        <!--            app:constraint_referenced_ids="text_view_don_t_have_an_account, tv_sign_up" />-->
+
+        <!--        <View-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:background="@android:color/darker_gray"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/text_view_or"-->
+        <!--            app:layout_constraintEnd_toStartOf="@id/text_view_or"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/text_view_or" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/text_view_or"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:text="OR"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/barrier_don_t_have" />-->
+
+        <!--        <View-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:background="@android:color/darker_gray"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/text_view_or"-->
+        <!--            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/text_view_or"-->
+        <!--            app:layout_constraintTop_toTopOf="@id/text_view_or" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_continue_with_phone"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Continue With Phone"-->
+        <!--            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/text_view_or" />-->
+
+        <!--        <FrameLayout-->
+        <!--            android:id="@+id/container_other_sign"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/btn_continue_with_phone"-->
+        <!--            tools:layout="@layout/fragment_xxx" />-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

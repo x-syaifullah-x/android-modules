@@ -1,0 +1,12 @@
+apply from: "$rootDir/common_android_library.gradle"
+apply from: "$rootDir/maven_publish_android.gradle"
+
+android {
+    String packageName = "id.xxx.module.google_sign"
+    namespace packageName
+    testNamespace "${namespace}.test"
+}
+
+dependencies {
+    api "com.google.android.gms:play-services-auth:$vComGoogleAndroidGmsPlayServicesAuth"
+}
