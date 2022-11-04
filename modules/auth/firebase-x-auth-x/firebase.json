@@ -1,0 +1,103 @@
+{
+  "hosting": [
+    {
+      "target": "umn-iptv-panel",
+      "public": "hosting/umn-iptv-panel",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    {
+      "target": "x-link-with-phone-number-x",
+      "public": "hosting/x-link-with-phone-number-x",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    {
+      "target": "x-recaptcha-x",
+      "public": "hosting/x-recaptcha-x",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    {
+      "target": "x-x-x-projects",
+      "public": "hosting/x-x-x-projects",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    }
+  ],
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ],
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "emulators": {
+    "auth": {
+      "host": "192.168.43.89",
+      "port": 9099
+    },
+    "functions": {
+      "host": "192.168.43.89",
+      "port": 5001
+    },
+    "firestore": {
+      "host": "192.168.43.89",
+      "port": 8080
+    },
+    "database": {
+      "host": "192.168.43.89",
+      "port": 9000
+    },
+    "hosting": {
+      "host": "192.168.43.89",
+      "port": 5000
+    },
+    "pubsub": {
+      "host": "192.168.43.89",
+      "port": 8085
+    },
+    "storage": {
+      "host": "192.168.43.89",
+      "port": 9199
+    },
+    "eventarc": {
+      "host": "192.168.43.89",
+      "port": 9299
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  },
+  "remoteconfig": {
+    "template": "remoteconfig.template.json"
+  }
+}

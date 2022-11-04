@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Demo Authentication</string>
+    <string name="google_web_client_id">560050292747-t5bauafek6tuljuh7pmbgtbttklpn12e.apps.googleusercontent.com</string>
+</resources>
