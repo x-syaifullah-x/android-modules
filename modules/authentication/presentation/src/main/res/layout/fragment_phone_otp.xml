@@ -35,47 +35,24 @@
             app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_layout_email"
+            android:id="@+id/text_input_layout_phone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:hint="Please enter your email address"
+            android:hint="Please enter phone number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_sign_up"
             app:layout_constraintWidth_percent=".8">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_input_edit_text_email"
+                android:id="@+id/text_input_edit_text_phone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:imeOptions="flagNoFullscreen"
                 android:importantForAutofill="no"
                 android:inputType="textNoSuggestions|textEmailAddress"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_layout_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Please enter your password"
-            app:endIconMode="password_toggle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_input_layout_email"
-            app:layout_constraintWidth_percent=".8">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_input_edit_text_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:imeOptions="flagNoFullscreen"
-                android:importantForAutofill="no"
-                android:inputType="textPassword"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,16 +66,16 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_input_layout_password"
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout_phone"
             app:layout_constraintWidth_percent=".75"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_sign_in"
+            android:id="@+id/button_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="SIGN IN"
+            android:text="NEXT"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progress_bar"
@@ -153,7 +130,7 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="@id/text_view_or"
             app:layout_constraintEnd_toStartOf="@id/text_view_or"
-            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"
+            app:layout_constraintStart_toStartOf="@id/text_input_layout_phone"
             app:layout_constraintTop_toTopOf="@+id/text_view_or" />
 
         <TextView
@@ -172,27 +149,8 @@
             android:layout_marginStart="8dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="@id/text_view_or"
-            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"
+            app:layout_constraintEnd_toEndOf="@id/text_input_layout_phone"
             app:layout_constraintStart_toEndOf="@id/text_view_or"
             app:layout_constraintTop_toTopOf="@id/text_view_or" />
-
-        <Button
-            android:id="@+id/btn_continue_with_phone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Continue With Phone"
-            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"
-            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"
-            app:layout_constraintTop_toBottomOf="@id/text_view_or" />
-
-        <FrameLayout
-            android:id="@+id/container_other_sign"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/text_input_layout_password"
-            app:layout_constraintStart_toStartOf="@id/text_input_layout_password"
-            app:layout_constraintTop_toBottomOf="@id/btn_continue_with_phone"
-            tools:layout="@layout/fragment_xxx" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

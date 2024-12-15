@@ -8,10 +8,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import id.xxx.module.auth.activities.fragment.HomeFragment
-import id.xxx.module.auth.domain.model.TypeSign
-import id.xxx.module.auth.presentation.ISign
-import id.xxx.module.auth.presentation.SignInFragment
-import id.xxx.module.auth.presentation.SignResult
+import id.xxx.module.auth.domain.model.AuthenticationType
+import id.xxx.module.autentication.IAuthentication
+import id.xxx.module.autentication.IAuthenticationResult
+import id.xxx.module.autentication.password.LoginPasswordFragment
 import id.xxx.module.common.Resources
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.drop
@@ -20,24 +20,32 @@ import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivity : FragmentActivity(), ISign {
+class MainActivity : FragmentActivity(), IAuthentication {
 
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val fragments = supportFragmentManager.fragments
-            if (fragments.size > 1) {
-                supportFragmentManager.beginTransaction().remove(
-                    fragments.last()
-                ).commitNow()
-            } else
-                finishAfterTransition()
+            finishAfterTransition()
+//            val fragments = supportFragmentManager.fragments
+//            if (fragments.size > 1) {
+//                supportFragmentManager.beginTransaction().remove(
+//                    fragments.last()
+//                ).commit()
+//
+//                if (supportFragmentManager.fragments.size == 0) {
+//                    finishAfterTransition()
+//                }
+//            } else
+//                finishAfterTransition()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         if (savedInstanceState == null) {
             lifecycleScope.launch {
                 when (val currentUser = viewModel.currentUser.asFlow().drop(1).first()) {
@@ -46,12 +54,12 @@ class MainActivity : FragmentActivity(), ISign {
                         val user = currentUser.value
                         val data =
                             if (user == null)
-                                SignInFragment::class.java to null
+                                LoginPasswordFragment::class.java to null
                             else
                                 HomeFragment::class.java to bundleOf(HomeFragment.KEY_DATA_EXTRA_USER to user)
                         supportFragmentManager.beginTransaction()
                             .replace(android.R.id.content, data.first, data.second)
-                            .commitNow()
+                            .commit()
                     }
 
                     is Resources.Failure -> {}
@@ -60,24 +68,21 @@ class MainActivity : FragmentActivity(), ISign {
         }
     }
 
-    override suspend fun onSign(type: TypeSign): SignResult {
-        return when (val res = viewModel.sign(type).lastOrNull()) {
+    override suspend fun onAuthentication(type: AuthenticationType) =
+        when (val res = viewModel.sign(type).lastOrNull()) {
             is Resources.Success -> {
                 withContext(Dispatchers.Main) {
                     supportFragmentManager.beginTransaction().replace(
                         android.R.id.content,
                         HomeFragment::class.java,
                         bundleOf(HomeFragment.KEY_DATA_EXTRA_USER to res.value)
-                    ).commitNow()
+                    ).commit()
                 }
-                SignResult.Success()
+                IAuthenticationResult.Success
             }
 
-            is Resources.Failure ->
-                SignResult.Error(res.value)
+            is Resources.Failure -> IAuthenticationResult.Error(res.value)
 
-            else ->
-                throw NotImplementedError()
+            else -> throw NotImplementedError()
         }
-    }
 }

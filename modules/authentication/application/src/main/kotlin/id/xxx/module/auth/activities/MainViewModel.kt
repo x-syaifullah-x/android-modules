@@ -11,7 +11,7 @@ import id.xxx.module.auth.data.AuthRepositoryImpl
 import id.xxx.module.auth.data.source.local.LocalDataSource
 import id.xxx.module.auth.data.source.local.db.AppDatabase
 import id.xxx.module.auth.data.source.remote.RemoteDataSource
-import id.xxx.module.auth.domain.model.TypeSign
+import id.xxx.module.auth.domain.model.AuthenticationType
 import id.xxx.module.auth.domain.usecase.AuthUseCase
 import id.xxx.module.auth.domain.usecase.AuthUseCaseImpl
 
@@ -46,6 +46,6 @@ class MainViewModel(
     val currentUser = authUseCase.getCurrentUser()
         .asLiveData(context = viewModelScope.coroutineContext)
 
-    fun sign(type: TypeSign) =
+    fun sign(type: AuthenticationType) =
         authUseCase.sign(type)
 }
