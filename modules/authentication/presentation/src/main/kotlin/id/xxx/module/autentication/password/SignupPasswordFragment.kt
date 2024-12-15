@@ -1,4 +1,4 @@
-package id.xxx.module.auth.presentation
+package id.xxx.module.autentication.password
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,26 +7,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import id.xxx.module.auth.domain.model.TypeSign
+import id.xxx.module.auth.domain.model.AuthenticationType
+import id.xxx.module.autentication.IAuthenticationResult
+import id.xxx.module.autentication.IAuthentication
 import id.xxx.module.viewbinding.ktx.viewBinding
-import id.xxx.modules.authentication.presentation.databinding.FragmentSignInBinding
+import id.xxx.modules.authentication.presentation.R
+import id.xxx.modules.authentication.presentation.databinding.FragmentSignUpBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SignInFragment : Fragment() {
+class SignupPasswordFragment : Fragment() {
 
-    private val vBinding by viewBinding<FragmentSignInBinding>()
+    private val vBinding by viewBinding<FragmentSignUpBinding>()
 
-    private var jobSignIn: Job? = null
+    private var jobSignUp: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = vBinding.root.apply {
-        if (background == null)
-            background = activity?.window?.decorView?.background
-    }
+    ) = vBinding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,36 +49,41 @@ class SignInFragment : Fragment() {
                         "Please enter your password"
                 vBinding.textInputLayoutPassword.hint = hint
             }
-        vBinding.buttonSignIn.setOnClickListener {
-            signIn()
+        vBinding.buttonSignUp.setOnClickListener {
+            signUp()
         }
-        vBinding.tvSignUp.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(android.R.id.content, SignUpFragment::class.java, null)
-                .commitNow()
+
+        vBinding.tvSignIn.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(id, LoginPasswordFragment::class.java, null)
+                .commit()
         }
     }
 
-    private fun signIn() {
-        vBinding.buttonSignIn.isEnabled = false
+    private fun signUp() {
+        vBinding.buttonSignUp.isEnabled = false
         vBinding.progressBar.visibility = View.VISIBLE
-        val iSign =
-            if (parentFragment is ISign)
-                parentFragment as? ISign
-            else if (activity is ISign)
-                activity as? ISign
+        val iAuthentication =
+            if (parentFragment is IAuthentication)
+                parentFragment as? IAuthentication
+            else if (activity is IAuthentication)
+                activity as? IAuthentication
             else
                 null
-        jobSignIn = lifecycleScope.launch {
+        jobSignUp = lifecycleScope.launch {
             val email = "${vBinding.textInputEditTextEmail.text}"
             val password = "${vBinding.textInputEditTextPassword.text}"
-            val t = TypeSign.InPassword(email = email, password = password)
-            val res = iSign?.onSign(t)
-            if (res is SignResult.Error) {
+            val t = AuthenticationType.Password(
+                email = email,
+                password = password,
+                type = AuthenticationType.Password.Type.UP
+            )
+            val res = iAuthentication?.onAuthentication(t)
+            if (res is IAuthenticationResult.Error) {
                 val c = vBinding.root.context
                 Toast.makeText(c, res.err.message, Toast.LENGTH_LONG).show()
             }
-            vBinding.buttonSignIn.isEnabled = true
+            vBinding.buttonSignUp.isEnabled = true
             vBinding.progressBar.visibility = View.GONE
         }
     }

@@ -1,4 +1,4 @@
-import { merge } from "webpack-merge"
+import { merge } from "webpack"
 import * as common from "./webpack.common.js"
 
 export default merge(common, {

@@ -23,10 +23,15 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = vBinding.root
+    ) = vBinding.root.apply {
+        if (background == null)
+            background = activity?.window?.decorView?.background
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        println(parentFragmentManager.fragments)
 
         val user =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -35,6 +40,6 @@ class HomeFragment : Fragment() {
                 @Suppress("DEPRECATION")
                 arguments?.getSerializable(KEY_DATA_EXTRA_USER) as? UserModel
             }
-        println(user)
+        vBinding.aa.text = "$user"
     }
 }

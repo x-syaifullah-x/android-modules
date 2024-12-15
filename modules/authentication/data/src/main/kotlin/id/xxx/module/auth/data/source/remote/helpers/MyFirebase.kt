@@ -13,22 +13,24 @@ object MyFirebase {
     fun initialize(context: Context) {
         synchronized(this) {
             val options = FirebaseOptions.Builder()
-//            .setDatabaseUrl(nul)
+                .setDatabaseUrl(null)
                 .setGcmSenderId("1098413132051")
                 .setApiKey("AIzaSyBHv3ZOEpUYTtBNv1lwJbbjpEe20sQfR20")
-                .setApplicationId("1:1098413132051:android:958b4f05318804a5cc72e6")
+                .setApplicationId("1:1098413132051:android:75e4145217b22569cc72e6")
                 .setStorageBucket("x-x-x-projects.appspot.com")
                 .setProjectId("x-x-x-projects")
                 .build()
             if (_sFirebaseApp != null)
                 _sFirebaseApp?.delete()
-            _sFirebaseApp = FirebaseApp.initializeApp(context, options)
+            _sFirebaseApp = FirebaseApp.initializeApp(context.applicationContext, options)
         }
     }
 
-    fun getFirebaseApp() = _sFirebaseApp
-        ?: throw NullPointerException("Please call firebaseInit before call this methode")
+    fun getFirebaseAuth() = FirebaseAuth.getInstance(getFirebaseApp())
+        .apply {
+//            useEmulator("192.168.43.89", 9099)
+        }
 
-    fun getFirebaseAuth() =
-        FirebaseAuth.getInstance(getFirebaseApp())
+    private fun getFirebaseApp() = _sFirebaseApp
+        ?: throw NullPointerException("Please call firebaseInit before call this methode")
 }
