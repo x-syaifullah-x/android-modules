@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".8"
+            tools:layout="@layout/fragment_sign_in" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_or"
+            app:layout_constraintEnd_toStartOf="@id/text_view_or"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintTop_toTopOf="@+id/text_view_or" />
+
+        <TextView
+            android:id="@+id/text_view_or"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/or"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_or"
+            app:layout_constraintEnd_toEndOf="@id/content"
+            app:layout_constraintStart_toEndOf="@id/text_view_or"
+            app:layout_constraintTop_toTopOf="@id/text_view_or" />
+
+        <Button
+            android:id="@+id/btn_continue_with_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with_phone"
+            app:layout_constraintEnd_toEndOf="@id/content"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintTop_toBottomOf="@id/text_view_or" />
+
+        <Button
+            android:id="@+id/btn_continue_with_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with_password"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/content"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintTop_toBottomOf="@id/text_view_or" />
+
+        <Button
+            android:id="@+id/btn_continue_with_google"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with_google"
+            app:layout_constraintEnd_toEndOf="@id/content"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintTop_toBottomOf="@id/btn_continue_with_password" />
+
+        <ProgressBar
+            android:id="@+id/progress_auth_google"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="250dp"
+            android:layout_height="8dp"
+            android:indeterminate="true"
+            android:indeterminateTint="?colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/btn_continue_with_google"
+            app:layout_constraintStart_toStartOf="@id/btn_continue_with_google"
+            app:layout_constraintTop_toBottomOf="@id/btn_continue_with_google"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

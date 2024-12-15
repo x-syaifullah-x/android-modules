@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_web_client_id" />
+    <string name="continue_with_google">Continue With Google</string>
+    <string name="continue_with_password">Continue With Password</string>
+    <string name="continue_with_phone">Continue With Phone</string>
+    <string name="or">OR</string>
+</resources>

@@ -7,8 +7,8 @@ dependencies {
     implementation project(":modules:authentication:domain")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:$vFirebaseBom"))
-    implementation "com.google.firebase:firebase-auth-ktx"
+    api(platform("com.google.firebase:firebase-bom:$vFirebaseBom"))
+    api "com.google.firebase:firebase-auth-ktx"
 
     // Room
     implementation "androidx.room:room-ktx:$vAndroidxRoom" // support suspend fun
