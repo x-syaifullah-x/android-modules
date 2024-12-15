@@ -2,10 +2,14 @@ package id.xxx.module.auth.data
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import id.xxx.module.auth.data.source.remote.helpers.MyFirebase
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Test
+import java.security.AuthProvider
 
 class AuthRepositoryImplTest {
 
@@ -13,14 +17,17 @@ class AuthRepositoryImplTest {
 
     @Before
     fun before() {
-        val appContext =
-            InstrumentationRegistry.getInstrumentation().targetContext
-        context = appContext
-        MyFirebase.initialize(appContext)
+        context = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
     @Test
-    fun sign_up_type_password_already_test() = runBlocking {
+    fun sign_up_type_password_already_test(): Unit = runBlocking {
+        val auth = FirebaseAuth.getInstance()
+//        val res = auth.signInWithEmailAndPassword("a@gmail.com", "123456").await()
+//        println(res.user?.providerId)
+//        val credential = EmailAuthProvider.getCredential("a@username.com", "123456")
+//        val a = res.user?.linkWithCredential(credential)?.await()
+//        println(a?.user?.getIdToken(true))
 //        val type = TypeSignUp.Password(getRandomEmail(), "123456")
 //        val firebaseAuth = MyFirebase.getFirebaseAuth()
 //        try {
