@@ -1,6 +1,5 @@
 package id.xxx.module.auth.data.source.remote
 
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
@@ -22,15 +21,15 @@ class RemoteDataSource private constructor() {
 
     internal suspend fun sign(type: AuthenticationType): SignResult {
         val auth = FirebaseAuth.getInstance()
+        auth.useEmulator("192.168.43.89", 9099)
         val authResult = when (type) {
             is AuthenticationType.Google -> {
                 auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
             }
 
             is AuthenticationType.Phone -> {
-                auth.signInWithCredential(
-                    PhoneAuthProvider.getCredential(type.verificationId, type.code)
-                )
+                val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
+                auth.signInWithCredential(credential)
             }
 
             is AuthenticationType.Password -> {

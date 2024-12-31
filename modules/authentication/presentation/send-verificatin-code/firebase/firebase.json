@@ -21,5 +21,23 @@
         "*.local"
       ]
     }
-  ]
+  ],
+  "emulators": {
+    "auth": {
+      "host": "192.168.43.89",
+      "port": 9099
+    },
+    "functions": {
+      "host": "192.168.43.89",
+      "port": 5001
+    },
+    "hosting": {
+      "host": "192.168.43.89",
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
 }

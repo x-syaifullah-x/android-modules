@@ -122,11 +122,13 @@ class AuthenticationFragment : Fragment() {
     }
 
     private fun onClickToggleAuth(v: View) {
-        if (_state == State.SIGN_IN) {
-            setForm(FormSignupPasswordFragment())
-        } else {
-            setForm(FormLoginPasswordFragment())
-        }
+        val fragment =
+            when (childFragmentManager.findFragmentById(vBinding.containerForm.id)) {
+                is FromPhoneFragment -> FromPhoneFragment()
+                is FormLoginPasswordFragment -> FormSignupPasswordFragment()
+                else -> FormLoginPasswordFragment()
+            }
+        setForm(fragment)
     }
 
     private fun onClickContinueWithGoogle(v: View) = googleLauncher.launch(null)
@@ -150,7 +152,13 @@ class AuthenticationFragment : Fragment() {
             }
 
             is FromPhoneFragment -> {
-                setTitleAndToggle(R.string.title_sign_phone)
+                if (_state == State.SIGN_IN) {
+                    _state = State.SIGN_UP
+                    setTitleAndToggle(R.string.title_sign_in_phone, R.array.don_t_have_an_account)
+                } else {
+                    _state = State.SIGN_IN
+                    setTitleAndToggle(R.string.title_sign_up_phone, R.array.already_have_an_account)
+                }
                 vBinding.btnContinueWithPhone.visibility = View.INVISIBLE
                 vBinding.btnContinueWithPassword.visibility = View.VISIBLE
             }
@@ -162,6 +170,17 @@ class AuthenticationFragment : Fragment() {
                 vBinding.btnContinueWithPassword.visibility = View.INVISIBLE
             }
         }
+
+        if (_state == State.SIGN_UP) {
+            vBinding.btnContinueWithPhone.text = "SIGN UP WITH PHONE"
+            vBinding.btnContinueWithGoogle.text = "SIGN UP WITH GOOGLE"
+            vBinding.btnContinueWithPassword.text = "SIGN UP WITH PASSWORD"
+        } else {
+            vBinding.btnContinueWithPhone.text = "LOGIN WITH PHONE"
+            vBinding.btnContinueWithGoogle.text = "LOGIN WITH GOOGLE"
+            vBinding.btnContinueWithPassword.text = "LOGIN WITH PASSWORD"
+        }
+
         childFragmentManager.beginTransaction()
             .replace(vBinding.containerForm.id, fragment ?: FormLoginPasswordFragment(), tag)
             .commitNow()
