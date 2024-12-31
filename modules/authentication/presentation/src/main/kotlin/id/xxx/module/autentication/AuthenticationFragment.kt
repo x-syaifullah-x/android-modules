@@ -66,7 +66,13 @@ class AuthenticationFragment : Fragment() {
 
     private fun googleLauncherCallback(account: GoogleSignInAccount?) =
         lifecycleScope.launch {
-            val authType = AuthenticationType.Google(account?.idToken ?: return@launch)
+            val mode =
+                if (_state == State.SIGN_UP)
+                    AuthenticationType.Mode.Signup
+                else
+                    AuthenticationType.Mode.Login
+            val authType =
+                AuthenticationType.Google(idToken = account?.idToken ?: return@launch, mode = mode)
             getCallback<IAuthentication>()?.onAuthentication(authType)?.collect { res ->
                 vBinding.btnContinueWithGoogle.isEnabled = res !is Resources.Loading
                 val progress = vBinding.progressAuthGoogle

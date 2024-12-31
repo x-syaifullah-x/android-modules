@@ -72,7 +72,7 @@ class FormSignupPasswordFragment : Fragment() {
             val t = AuthenticationType.Password(
                 email = email,
                 password = password,
-                type = AuthenticationType.Password.Type.UP
+                mode = AuthenticationType.Mode.Signup
             )
             val res = getCallback<IAuthentication>()?.onAuthentication(t)?.lastOrNull()
             if (res is Resources.Failure) {

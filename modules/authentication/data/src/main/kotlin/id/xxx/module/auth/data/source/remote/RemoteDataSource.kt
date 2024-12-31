@@ -35,7 +35,7 @@ class RemoteDataSource private constructor() {
             is AuthenticationType.Password -> {
                 val email = type.email
                 val password = type.password
-                if (type.type == AuthenticationType.Password.Type.UP)
+                if (type.mode == AuthenticationType.Mode.Signup)
                     auth.createUserWithEmailAndPassword(email, password)
                 else
                     auth.signInWithEmailAndPassword(email, password)
@@ -43,12 +43,24 @@ class RemoteDataSource private constructor() {
         }.await()
         val user = authResult.user
             ?: throw NullPointerException("user")
-        val token = user.getIdToken(false).await()
-        val claimsFirebase = token.claims["firebase"] as Map<*, *>
-        val signProvider = "${claimsFirebase["sign_in_provider"]}"
+
         val additionalUserInfo = authResult.additionalUserInfo
         val isNewUser = additionalUserInfo?.isNewUser
             ?: throw NullPointerException("isNewUser")
+
+        if (type.mode == AuthenticationType.Mode.Login && isNewUser) {
+            user.delete().await()
+            throw IllegalArgumentException("user not found")
+        }
+
+        if (type.mode == AuthenticationType.Mode.Signup && !isNewUser) {
+            auth.signOut()
+            throw IllegalArgumentException("user already exist")
+        }
+
+        val token = user.getIdToken(false).await()
+        val claimsFirebase = token.claims["firebase"] as Map<*, *>
+        val signProvider = "${claimsFirebase["sign_in_provider"]}"
         return SignResult(uid = user.uid, isNewUser = isNewUser, signProvider = signProvider)
     }
 }
