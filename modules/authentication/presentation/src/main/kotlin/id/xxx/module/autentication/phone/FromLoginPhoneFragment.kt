@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import id.xxx.module.viewbinding.ktx.viewBinding
 import id.xxx.modules.authentication.presentation.databinding.FragmentPhoneBinding
 
-class FromPhoneFragment : Fragment() {
+class FromLoginPhoneFragment : Fragment() {
 
     companion object {
 

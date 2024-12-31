@@ -12,7 +12,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import id.xxx.module.autentication.google.GoogleAccountResultContract
 import id.xxx.module.autentication.password.FormLoginPasswordFragment
 import id.xxx.module.autentication.password.FormSignupPasswordFragment
-import id.xxx.module.autentication.phone.FromPhoneFragment
+import id.xxx.module.autentication.phone.FromLoginPhoneFragment
+import id.xxx.module.autentication.phone.FromSignupPhoneFragment
 import id.xxx.module.autentication.phone.PhoneOTPSanderFragment
 import id.xxx.module.autentication.phone.PhoneOTPVerifierFragment
 import id.xxx.module.auth.domain.model.AuthenticationType
@@ -124,9 +125,11 @@ class AuthenticationFragment : Fragment() {
     private fun onClickToggleAuth(v: View) {
         val fragment =
             when (childFragmentManager.findFragmentById(vBinding.containerForm.id)) {
-                is FromPhoneFragment -> FromPhoneFragment()
+                is FromLoginPhoneFragment -> FromSignupPhoneFragment()
+                is FromSignupPhoneFragment -> FromLoginPhoneFragment()
                 is FormLoginPasswordFragment -> FormSignupPasswordFragment()
-                else -> FormLoginPasswordFragment()
+                is FormSignupPasswordFragment -> FormLoginPasswordFragment()
+                else -> throw NotImplementedError()
             }
         setForm(fragment)
     }
@@ -140,7 +143,7 @@ class AuthenticationFragment : Fragment() {
             setForm(FormSignupPasswordFragment())
 
     private fun onClickContinueWithPhone(v: View) =
-        setForm(FromPhoneFragment())
+        setForm(FromLoginPhoneFragment())
 
     private fun setForm(fragment: Fragment?, tag: String? = null) {
         when (fragment) {
@@ -151,14 +154,16 @@ class AuthenticationFragment : Fragment() {
                 vBinding.btnContinueWithPassword.visibility = View.INVISIBLE
             }
 
-            is FromPhoneFragment -> {
-                if (_state == State.SIGN_IN) {
-                    _state = State.SIGN_UP
-                    setTitleAndToggle(R.string.title_sign_in_phone, R.array.don_t_have_an_account)
-                } else {
-                    _state = State.SIGN_IN
-                    setTitleAndToggle(R.string.title_sign_up_phone, R.array.already_have_an_account)
-                }
+            is FromSignupPhoneFragment -> {
+                _state = State.SIGN_UP
+                setTitleAndToggle(R.string.title_sign_in_phone, R.array.don_t_have_an_account)
+                vBinding.btnContinueWithPhone.visibility = View.INVISIBLE
+                vBinding.btnContinueWithPassword.visibility = View.VISIBLE
+            }
+
+            is FromLoginPhoneFragment -> {
+                _state = State.SIGN_IN
+                setTitleAndToggle(R.string.title_sign_up_phone, R.array.already_have_an_account)
                 vBinding.btnContinueWithPhone.visibility = View.INVISIBLE
                 vBinding.btnContinueWithPassword.visibility = View.VISIBLE
             }
