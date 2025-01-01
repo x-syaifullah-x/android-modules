@@ -69,7 +69,7 @@ class FormSignupPasswordFragment : Fragment() {
         jobSignUp = lifecycleScope.launch {
             val email = "${vBinding.textInputEditTextEmail.text}"
             val password = "${vBinding.textInputEditTextPassword.text}"
-            val t = AuthenticationType.SignUpPassword(
+            val t = AuthenticationType.Password.SignUp(
                 email = email, password = password,
             )
             val res = getCallback<IAuthentication>()?.onAuthenticate(t)?.lastOrNull()

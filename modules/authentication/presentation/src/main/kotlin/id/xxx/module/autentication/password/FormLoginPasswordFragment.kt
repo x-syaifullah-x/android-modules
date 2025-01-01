@@ -54,7 +54,7 @@ class FormLoginPasswordFragment : Fragment() {
         lifecycleScope.launch {
             val email = "${vBinding.textInputEditTextEmail.text}"
             val password = "${vBinding.textInputEditTextPassword.text}"
-            val t = AuthenticationType.SignInPassword(email = email, password = password)
+            val t = AuthenticationType.Password.SignIn(email = email, password = password)
             val res = getCallback<IAuthentication>()?.onAuthenticate(t)?.lastOrNull()
             if (res is Resources.Failure)
                 Toast.makeText(v.context, res.value.message, Toast.LENGTH_LONG).show()

@@ -26,38 +26,40 @@ class RemoteDataSource private constructor() {
     internal suspend fun sign(type: AuthenticationType): SignResult {
         val auth = FirebaseAuth.getInstance()
 //        auth.useEmulator("192.168.43.89", 9099)
+        val isSignUp: Boolean
         val authResult = try {
             when (type) {
-                is AuthenticationType.SignInGoogle -> {
-                    auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
+                is AuthenticationType.Password -> {
+                    val email = type.email
+                    val password = type.password
+                    when (type) {
+                        is AuthenticationType.Password.SignIn -> {
+                            isSignUp = false
+                            auth.signInWithEmailAndPassword(email, password)
+                        }
+
+                        is AuthenticationType.Password.SignUp -> {
+                            isSignUp = true
+                            auth.signInWithEmailAndPassword(email, password)
+                        }
+                    }
                 }
 
-                is AuthenticationType.SignUpGoogle -> {
-                    auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
-                }
-
-                is AuthenticationType.SignUpPhone -> {
+                is AuthenticationType.Phone -> {
+                    isSignUp = when (type) {
+                        is AuthenticationType.Phone.SignIn -> false
+                        is AuthenticationType.Phone.SignUp -> true
+                    }
                     val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
                     auth.signInWithCredential(credential)
                 }
 
-                is AuthenticationType.SignInPhone -> {
-                    val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
-                    auth.signInWithCredential(credential)
-                }
-
-                is AuthenticationType.SignInPassword -> {
-                    val email = type.email
-                    val password = type.password
-                    auth.signInWithEmailAndPassword(email, password)
-                    auth.signInWithEmailAndPassword(email, password)
-                }
-
-                is AuthenticationType.SignUpPassword -> {
-                    val email = type.email
-                    val password = type.password
-                    auth.signInWithEmailAndPassword(email, password)
-                    auth.createUserWithEmailAndPassword(email, password)
+                is AuthenticationType.Google -> {
+                    isSignUp = when (type) {
+                        is AuthenticationType.Google.SignIn -> false
+                        is AuthenticationType.Google.SignUp -> true
+                    }
+                    auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
                 }
             }.await()
         } catch (e: Throwable) {
@@ -74,13 +76,13 @@ class RemoteDataSource private constructor() {
         val isNewUser = additionalUserInfo?.isNewUser
             ?: throw NullPointerException("isNewUser")
 
-        if (type.flag == AuthenticationType.Flag.SIGN_IN && isNewUser) {
-            user.delete().await()
-            throw UserNotRegisteredException()
+        if (isSignUp && !isNewUser) {
+            auth.signOut(); throw AccountAlreadyInUseException()
         }
 
-        if (type.flag == AuthenticationType.Flag.SIGN_UP && !isNewUser) {
-            auth.signOut(); throw AccountAlreadyInUseException()
+        if (!isSignUp && isNewUser) {
+            user.delete().await()
+            throw UserNotRegisteredException()
         }
 
         val token = user.getIdToken(false).await()

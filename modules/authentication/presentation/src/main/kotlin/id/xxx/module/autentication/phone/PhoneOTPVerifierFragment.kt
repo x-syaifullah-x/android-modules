@@ -93,9 +93,9 @@ class PhoneOTPVerifierFragment : Fragment() {
                         fragments[fragments.size - 2].childFragmentManager.fragments.lastOrNull()
                     val type =
                         if (a is FromSignupPhoneFragment)
-                            AuthenticationType.SignUpPhone(verificationId, code)
+                            AuthenticationType.Phone.SignUp(verificationId, code)
                         else
-                            AuthenticationType.SignUpPhone(verificationId, code)
+                            AuthenticationType.Phone.SignIn(verificationId, code)
                     val res = getCallback<IAuthentication>()?.onAuthenticate(type)?.lastOrNull()
                     if (res is Resources.Failure) {
                         Toast.makeText(context, res.value.message, Toast.LENGTH_LONG).show()

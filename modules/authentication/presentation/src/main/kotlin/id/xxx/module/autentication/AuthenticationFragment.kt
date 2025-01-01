@@ -69,9 +69,9 @@ class AuthenticationFragment : Fragment() {
             val idToken = account?.idToken ?: return@launch
             val authType =
                 if (_state == State.SIGN_UP)
-                    AuthenticationType.SignUpGoogle(idToken = idToken)
+                    AuthenticationType.Google.SignUp(idToken = idToken)
                 else
-                    AuthenticationType.SignInGoogle(idToken = idToken)
+                    AuthenticationType.Google.SignIn(idToken = idToken)
             getCallback<IAuthentication>()?.onAuthenticate(authType)?.collect { res ->
                 vBinding.btnContinueWithGoogle.isEnabled = res !is Resources.Loading
                 val progress = vBinding.progressAuthGoogle

@@ -4,47 +4,45 @@ import java.io.Serializable
 
 sealed interface AuthenticationType : Serializable {
 
-    enum class Flag { SIGN_IN, SIGN_UP }
+    sealed interface Password : AuthenticationType {
+        val email: String
+        val password: String
 
-    val flag: Flag
+        data class SignIn(
+            override val email: String,
+            override val password: String,
+        ) : Password
 
-    data class SignInPassword(
-        val email: String,
-        val password: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_IN
+        data class SignUp(
+            override val email: String,
+            override val password: String,
+        ) : Password
     }
 
-    data class SignUpPassword(
-        val email: String,
-        val password: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_UP
+    sealed interface Phone : AuthenticationType {
+        val verificationId: String
+        val code: String
+
+        data class SignIn(
+            override val verificationId: String,
+            override val code: String,
+        ) : Phone
+
+        data class SignUp(
+            override val verificationId: String,
+            override val code: String,
+        ) : Phone
     }
 
-    data class SignInPhone(
-        val verificationId: String,
-        val code: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_IN
-    }
+    sealed interface Google : AuthenticationType {
+        val idToken: String
 
-    data class SignUpPhone(
-        val verificationId: String,
-        val code: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_UP
-    }
+        data class SignIn(
+            override val idToken: String,
+        ) : Google
 
-    data class SignUpGoogle(
-        val idToken: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_UP
-    }
-
-    data class SignInGoogle(
-        val idToken: String,
-    ) : AuthenticationType {
-        override val flag = Flag.SIGN_IN
+        data class SignUp(
+            override val idToken: String,
+        ) : Google
     }
 }
