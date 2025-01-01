@@ -66,14 +66,13 @@ class AuthenticationFragment : Fragment() {
 
     private fun googleLauncherCallback(account: GoogleSignInAccount?) =
         lifecycleScope.launch {
-            val mode =
-                if (_state == State.SIGN_UP)
-                    AuthenticationType.Mode.Signup
-                else
-                    AuthenticationType.Mode.Login
+            val idToken = account?.idToken ?: return@launch
             val authType =
-                AuthenticationType.Google(idToken = account?.idToken ?: return@launch, mode = mode)
-            getCallback<IAuthentication>()?.onAuthentication(authType)?.collect { res ->
+                if (_state == State.SIGN_UP)
+                    AuthenticationType.SignUpGoogle(idToken = idToken)
+                else
+                    AuthenticationType.SignInGoogle(idToken = idToken)
+            getCallback<IAuthentication>()?.onAuthenticate(authType)?.collect { res ->
                 vBinding.btnContinueWithGoogle.isEnabled = res !is Resources.Loading
                 val progress = vBinding.progressAuthGoogle
                 when (res) {
@@ -162,14 +161,14 @@ class AuthenticationFragment : Fragment() {
 
             is FromSignupPhoneFragment -> {
                 _state = State.SIGN_UP
-                setTitleAndToggle(R.string.title_sign_in_phone, R.array.don_t_have_an_account)
+                setTitleAndToggle(R.string.title_sign_up_phone, R.array.already_have_an_account)
                 vBinding.btnContinueWithPhone.visibility = View.INVISIBLE
                 vBinding.btnContinueWithPassword.visibility = View.VISIBLE
             }
 
             is FromLoginPhoneFragment -> {
                 _state = State.SIGN_IN
-                setTitleAndToggle(R.string.title_sign_up_phone, R.array.already_have_an_account)
+                setTitleAndToggle(R.string.title_sign_in_phone, R.array.don_t_have_an_account)
                 vBinding.btnContinueWithPhone.visibility = View.INVISIBLE
                 vBinding.btnContinueWithPassword.visibility = View.VISIBLE
             }
@@ -183,13 +182,13 @@ class AuthenticationFragment : Fragment() {
         }
 
         if (_state == State.SIGN_UP) {
-            vBinding.btnContinueWithPhone.text = "SIGN UP WITH PHONE"
-            vBinding.btnContinueWithGoogle.text = "SIGN UP WITH GOOGLE"
-            vBinding.btnContinueWithPassword.text = "SIGN UP WITH PASSWORD"
+            vBinding.btnContinueWithPhone.text = getString(R.string.text_sign_up_with_phone)
+            vBinding.btnContinueWithGoogle.text = getString(R.string.text_sign_up_with_google)
+            vBinding.btnContinueWithPassword.text = getString(R.string.text_sign_up_with_password)
         } else {
-            vBinding.btnContinueWithPhone.text = "LOGIN WITH PHONE"
-            vBinding.btnContinueWithGoogle.text = "LOGIN WITH GOOGLE"
-            vBinding.btnContinueWithPassword.text = "LOGIN WITH PASSWORD"
+            vBinding.btnContinueWithPhone.text = getString(R.string.text_sign_in_with_phone)
+            vBinding.btnContinueWithGoogle.text = getString(R.string.text_sign_in_with_google)
+            vBinding.btnContinueWithPassword.text = getString(R.string.text_sign_in_with_password)
         }
 
         childFragmentManager.beginTransaction()
@@ -197,18 +196,11 @@ class AuthenticationFragment : Fragment() {
             .commitNow()
     }
 
-    private fun setTitleAndToggle(titleKey: Int, toggleKey: Int? = null) {
-        vBinding.textTitle.text = getString(titleKey)
-        if (toggleKey != null) {
-            val data = context?.resources?.getStringArray(toggleKey)
-            vBinding.tvToggleAuth.text = data?.get(0) ?: ""
-            vBinding.btnToggleAuth.text = data?.get(1) ?: ""
-            vBinding.tvToggleAuth.visibility = View.VISIBLE
-            vBinding.btnToggleAuth.visibility = View.VISIBLE
-        } else {
-            vBinding.tvToggleAuth.visibility = View.GONE
-            vBinding.btnToggleAuth.visibility = View.GONE
-        }
+    private fun setTitleAndToggle(titleRes: Int, toggleRes: Int) {
+        vBinding.textTitle.text = getString(titleRes)
+        val data = requireContext().resources.getStringArray(toggleRes)
+        vBinding.tvToggleAuth.text = data[0]
+        vBinding.btnToggleAuth.text = data[1]
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

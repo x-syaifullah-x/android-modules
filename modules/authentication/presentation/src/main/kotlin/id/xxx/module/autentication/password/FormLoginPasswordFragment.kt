@@ -14,7 +14,6 @@ import id.xxx.module.ktx.getCallback
 import id.xxx.module.viewbinding.ktx.viewBinding
 import id.xxx.modules.authentication.presentation.databinding.FragmentSignInBinding
 import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class FormLoginPasswordFragment : Fragment() {
@@ -55,8 +54,8 @@ class FormLoginPasswordFragment : Fragment() {
         lifecycleScope.launch {
             val email = "${vBinding.textInputEditTextEmail.text}"
             val password = "${vBinding.textInputEditTextPassword.text}"
-            val t = AuthenticationType.Password(email = email, password = password)
-            val res = getCallback<IAuthentication>()?.onAuthentication(t)?.lastOrNull()
+            val t = AuthenticationType.SignInPassword(email = email, password = password)
+            val res = getCallback<IAuthentication>()?.onAuthenticate(t)?.lastOrNull()
             if (res is Resources.Failure)
                 Toast.makeText(v.context, res.value.message, Toast.LENGTH_LONG).show()
             v.isEnabled = true

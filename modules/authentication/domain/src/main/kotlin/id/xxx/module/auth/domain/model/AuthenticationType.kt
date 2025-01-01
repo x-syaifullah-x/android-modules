@@ -4,24 +4,47 @@ import java.io.Serializable
 
 sealed interface AuthenticationType : Serializable {
 
-    enum class Mode { Login, Signup }
+    enum class Flag { SIGN_IN, SIGN_UP }
 
-    val mode: Mode
+    val flag: Flag
 
-    data class Password(
+    data class SignInPassword(
         val email: String,
         val password: String,
-        override val mode: Mode = Mode.Login,
-    ) : AuthenticationType
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_IN
+    }
 
-    data class Phone(
+    data class SignUpPassword(
+        val email: String,
+        val password: String,
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_UP
+    }
+
+    data class SignInPhone(
         val verificationId: String,
         val code: String,
-        override val mode: Mode = Mode.Login,
-    ) : AuthenticationType
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_IN
+    }
 
-    data class Google(
+    data class SignUpPhone(
+        val verificationId: String,
+        val code: String,
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_UP
+    }
+
+    data class SignUpGoogle(
         val idToken: String,
-        override val mode: Mode = Mode.Login,
-    ) : AuthenticationType
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_UP
+    }
+
+    data class SignInGoogle(
+        val idToken: String,
+    ) : AuthenticationType {
+        override val flag = Flag.SIGN_IN
+    }
 }

@@ -88,10 +88,15 @@ class PhoneOTPVerifierFragment : Fragment() {
                     val code = "${vBinding.textInputEditTextPhone.text}"
                     val verificationId = arguments?.getString(DATA_EXTRA_SESSION_INFO)
                         ?: throw NullPointerException("session_info")
+                    val fragments = parentFragmentManager.fragments
+                    val a =
+                        fragments[fragments.size - 2].childFragmentManager.fragments.lastOrNull()
                     val type =
-                        AuthenticationType.Phone(verificationId = verificationId, code = code)
-                    val a = getCallback<IAuthentication>()?.onAuthentication(type)
-                    val res = a?.lastOrNull()
+                        if (a is FromSignupPhoneFragment)
+                            AuthenticationType.SignUpPhone(verificationId, code)
+                        else
+                            AuthenticationType.SignUpPhone(verificationId, code)
+                    val res = getCallback<IAuthentication>()?.onAuthenticate(type)?.lastOrNull()
                     if (res is Resources.Failure) {
                         Toast.makeText(context, res.value.message, Toast.LENGTH_LONG).show()
                     }

@@ -69,12 +69,10 @@ class FormSignupPasswordFragment : Fragment() {
         jobSignUp = lifecycleScope.launch {
             val email = "${vBinding.textInputEditTextEmail.text}"
             val password = "${vBinding.textInputEditTextPassword.text}"
-            val t = AuthenticationType.Password(
-                email = email,
-                password = password,
-                mode = AuthenticationType.Mode.Signup
+            val t = AuthenticationType.SignUpPassword(
+                email = email, password = password,
             )
-            val res = getCallback<IAuthentication>()?.onAuthentication(t)?.lastOrNull()
+            val res = getCallback<IAuthentication>()?.onAuthenticate(t)?.lastOrNull()
             if (res is Resources.Failure) {
                 val c = v.context
                 Toast.makeText(c, res.value.message, Toast.LENGTH_LONG).show()

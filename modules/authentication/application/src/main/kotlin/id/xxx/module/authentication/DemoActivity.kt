@@ -27,7 +27,7 @@ class DemoActivity : AppCompatActivity(), IAuthentication {
                 .commit()
     }
 
-    override fun onAuthentication(type: AuthenticationType) =
+    override fun onAuthenticate(type: AuthenticationType) =
         viewModel.authentication(type).map { res ->
             if (res is Resources.Success)
                 supportFragmentManager.beginTransaction().replace(

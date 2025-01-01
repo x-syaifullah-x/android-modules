@@ -1,9 +1,13 @@
 package id.xxx.module.auth.data.source.remote
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
 import id.xxx.module.auth.data.source.remote.model.SignResult
+import id.xxx.module.auth.domain.exception.AccountAlreadyInUseException
+import id.xxx.module.auth.domain.exception.UserNotRegisteredException
 import id.xxx.module.auth.domain.model.AuthenticationType
 import kotlinx.coroutines.tasks.await
 
@@ -21,26 +25,48 @@ class RemoteDataSource private constructor() {
 
     internal suspend fun sign(type: AuthenticationType): SignResult {
         val auth = FirebaseAuth.getInstance()
-        auth.useEmulator("192.168.43.89", 9099)
-        val authResult = when (type) {
-            is AuthenticationType.Google -> {
-                auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
-            }
+//        auth.useEmulator("192.168.43.89", 9099)
+        val authResult = try {
+            when (type) {
+                is AuthenticationType.SignInGoogle -> {
+                    auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
+                }
 
-            is AuthenticationType.Phone -> {
-                val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
-                auth.signInWithCredential(credential)
-            }
+                is AuthenticationType.SignUpGoogle -> {
+                    auth.signInWithCredential(GoogleAuthProvider.getCredential(type.idToken, null))
+                }
 
-            is AuthenticationType.Password -> {
-                val email = type.email
-                val password = type.password
-                if (type.mode == AuthenticationType.Mode.Signup)
-                    auth.createUserWithEmailAndPassword(email, password)
-                else
+                is AuthenticationType.SignUpPhone -> {
+                    val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
+                    auth.signInWithCredential(credential)
+                }
+
+                is AuthenticationType.SignInPhone -> {
+                    val credential = PhoneAuthProvider.getCredential(type.verificationId, type.code)
+                    auth.signInWithCredential(credential)
+                }
+
+                is AuthenticationType.SignInPassword -> {
+                    val email = type.email
+                    val password = type.password
                     auth.signInWithEmailAndPassword(email, password)
+                    auth.signInWithEmailAndPassword(email, password)
+                }
+
+                is AuthenticationType.SignUpPassword -> {
+                    val email = type.email
+                    val password = type.password
+                    auth.signInWithEmailAndPassword(email, password)
+                    auth.createUserWithEmailAndPassword(email, password)
+                }
+            }.await()
+        } catch (e: Throwable) {
+            when (e) {
+                is FirebaseAuthInvalidCredentialsException -> throw UserNotRegisteredException()
+                is FirebaseAuthUserCollisionException -> throw AccountAlreadyInUseException()
+                else -> throw e
             }
-        }.await()
+        }
         val user = authResult.user
             ?: throw NullPointerException("user")
 
@@ -48,14 +74,13 @@ class RemoteDataSource private constructor() {
         val isNewUser = additionalUserInfo?.isNewUser
             ?: throw NullPointerException("isNewUser")
 
-        if (type.mode == AuthenticationType.Mode.Login && isNewUser) {
+        if (type.flag == AuthenticationType.Flag.SIGN_IN && isNewUser) {
             user.delete().await()
-            throw IllegalArgumentException("user not found")
+            throw UserNotRegisteredException()
         }
 
-        if (type.mode == AuthenticationType.Mode.Signup && !isNewUser) {
-            auth.signOut()
-            throw IllegalArgumentException("user already exist")
+        if (type.flag == AuthenticationType.Flag.SIGN_UP && !isNewUser) {
+            auth.signOut(); throw AccountAlreadyInUseException()
         }
 
         val token = user.getIdToken(false).await()

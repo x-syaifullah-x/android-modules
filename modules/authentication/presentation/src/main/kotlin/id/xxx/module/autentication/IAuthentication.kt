@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface IAuthentication {
 
-    fun onAuthentication(type: AuthenticationType): Flow<Resources<UserModel>>
+    fun onAuthenticate(type: AuthenticationType): Flow<Resources<UserModel>>
 }

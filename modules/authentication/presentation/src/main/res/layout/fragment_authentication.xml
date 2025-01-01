@@ -113,7 +113,7 @@
             android:id="@+id/btn_continue_with_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/continue_with_phone"
+            android:text="@string/text_sign_in_with_phone"
             app:layout_constraintEnd_toEndOf="@id/container_form"
             app:layout_constraintStart_toStartOf="@id/container_form"
             app:layout_constraintTop_toBottomOf="@id/text_view_or" />
@@ -122,7 +122,7 @@
             android:id="@+id/btn_continue_with_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/continue_with_password"
+            android:text="@string/text_sign_in_with_password"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@id/container_form"
             app:layout_constraintStart_toStartOf="@id/container_form"
@@ -132,7 +132,7 @@
             android:id="@+id/btn_continue_with_google"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/continue_with_google"
+            android:text="@string/text_sign_in_with_google"
             app:layout_constraintEnd_toEndOf="@id/container_form"
             app:layout_constraintStart_toStartOf="@id/container_form"
             app:layout_constraintTop_toBottomOf="@id/btn_continue_with_password" />
