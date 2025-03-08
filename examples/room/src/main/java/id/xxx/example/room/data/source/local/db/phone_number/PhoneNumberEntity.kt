@@ -27,7 +27,7 @@ import id.xxx.example.room.data.source.local.db.user.UserEntity
 data class PhoneNumberEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_PK)
-    private val _pk: Long? = null,
+    val pk: Long = 0,
 
     @ColumnInfo(name = COLUMN_USER_PK, index = true)
     val userPk: Long,
@@ -35,8 +35,6 @@ data class PhoneNumberEntity(
     @ColumnInfo(name = COLUMN_NUMBER)
     val number: String,
 ) {
-    val pk get() = _pk
-
     companion object {
         const val TABLE_NAME = "phone_number"
         const val COLUMN_PK = "pk"

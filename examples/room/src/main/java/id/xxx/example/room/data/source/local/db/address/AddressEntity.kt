@@ -21,12 +21,11 @@ import java.lang.Error
 data class AddressEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_PK)
-    val pk: Long? = null,
+    val pk: Long = 0,
 
     @ColumnInfo(name = COLUMN_USER_PK, index = true)
     val userPk: Long,
 ) {
-
     companion object {
         const val TABLE_NAME = "address"
         const val COLUMN_PK = "pk"
