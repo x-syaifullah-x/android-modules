@@ -44,7 +44,11 @@ buildscript {
                     details.useVersion "$vAndroidxCoordinatorLayout"
                 }
                 if (details.requested.group == "androidx.core") {
-                    details.useVersion "$vAndroidxCore"
+                    if ("${details.requested}".contains("androidx.core:core-viewtree:")) {
+                        details.useVersion "$vAndroidxCoreViewTree"
+                    } else {
+                        details.useVersion "$vAndroidxCore"
+                    }
                 }
                 if (details.requested.group == "androidx.cursoradapter") {
                     details.useVersion "$vAndroidxCursorAdapter"

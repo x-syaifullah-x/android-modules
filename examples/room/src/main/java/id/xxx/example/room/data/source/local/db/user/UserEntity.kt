@@ -13,13 +13,11 @@ import id.xxx.example.room.data.source.local.db.address.AddressEntity
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_PK)
-    private val _pk: Long? = null,
+    val pk: Long = 0L,
 
     @ColumnInfo(name = COLUMN_NAME)
     val name: String,
 ) {
-    val pk get() = _pk
-
     companion object {
         const val TABLE_NAME = "user"
         const val COLUMN_PK = "pk"

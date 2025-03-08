@@ -1,9 +1,6 @@
 # Android Module Template
 
-![Build](https://img.shields.io/github/actions/workflow/status/x-syaifullah-x/android-modules/templates_application.yml?master&style=flat-square)
-![Build](https://img.shields.io/github/actions/workflow/status/x-syaifullah-x/android-modules/publish_to_maven_local.yml?master&style=flat-square)
-![Build](https://img.shields.io/github/actions/workflow/status/x-syaifullah-x/android-modules/code_coverage.yml?master&style=flat-square)
-
+![Build](https://img.shields.io/github/actions/workflow/status/x-syaifullah-x/android-modules/linux_os.yml?master&style=flat-square)
 
 
 [//]: # (![Build]&#40;https://shields.io/github/workflow/status/x-syaifullah-x/android-modules/build__publish_maven_local/master?event=push&logo=github&label=Build&#41;)
