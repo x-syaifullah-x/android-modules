@@ -50,6 +50,6 @@ dependencies {
 
     // FIREBASE
     implementation platform("com.google.firebase:firebase-bom:$vFirebaseBom")
-    implementation "com.google.firebase:firebase-messaging-ktx"
-    implementation "com.google.firebase:firebase-firestore-ktx"
+    implementation "com.google.firebase:firebase-messaging"
+    implementation "com.google.firebase:firebase-firestore"
 }

@@ -13,33 +13,30 @@ jobs:
     strategy:
       matrix:
         api-level:
-          - 23
-          - 24
-          - 25
-          - 26
-          - 27
-          - 28
-          - 29
-          - 30
-          - 31
-          - 32
-          - 33
-          - 34
+          # - 23
+          # - 24
+          # - 25
+          # - 26
+          # - 27
+          # - 28
+          # - 29
+          # - 30
+          # - 31
+          # - 32
+          # - 33
+          # - 34
           - 35
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup gradle directory
         run: |
           sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: "21"
-          distribution: "oracle"
-
+          distribution: "jetbrains"
       - name: AVD cache
         uses: actions/cache@v4
         id: avd-cache
@@ -47,19 +44,18 @@ jobs:
           path: |
             $ANDROID_HOME/system-images
           key: avd-${{ matrix.api-level }}
-
       - name: Start AVD
         run: |
           # Setup KVM Group Permission
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-          
+
           # AVD Dependencies
           sudo apt-get install --no-install-suggests --no-install-recommends mesa-vulkan-drivers libpulse0 -y
-          
+
           export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
-          
+
           yes | sdkmanager --licenses
           sdkmanager --update
           sdk_manager_channel="--channel=0"
@@ -74,7 +70,6 @@ jobs:
           else
             emulator -avd test -metrics-collection -log-nofilter -no-boot-anim -nocache -no-snapstorage -no-snapshot -no-snapshot-load -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -camera-back none -accel on -qemu -cpu host,kvm=on -smp $(nproc) -m $(expr 1024 \* 6) &
           fi
-
       - name: Run code coverage
         run: |
           export PATH=$PATH:$ANDROID_HOME/platform-tools
@@ -84,7 +79,6 @@ jobs:
           adb shell settings put global animator_duration_scale 0.0
           adb shell input keyevent 82
           ./gradlew debugCodeCoverage
-
       - name: Uploading code coverage
         uses: actions/upload-artifact@v4
         with:
@@ -100,22 +94,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Gradle Directory
         run: |
           sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: "21"
-          distribution: "oracle"
-
+          distribution: "jetbrains"
       - name: Publish to maven local
         run: |
           ./gradlew clean publishToMavenLocal
           cd ~ && tar czvf /tmp/m2.tar.gz .m2/repository/id/xxx*
-
       - name: Uploading archive
         uses: actions/upload-artifact@v4
         with:
@@ -129,21 +119,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup gradle directory
         run: |
           sudo mount -v none -t tmpfs -o rw,noatime,nodiratime,size=100%,nr_inodes=0,mode=755,uid=$USER,gid=$USER,inode64 $GRADLE_HOME
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: "21"
-          distribution: "oracle"
-
+          distribution: "jetbrains"
       - name: Assemble release
         run: |
           ./gradlew clean :templates:application:assembleRelease
-
       - name: Uploading apk
         uses: actions/upload-artifact@v4
         with:

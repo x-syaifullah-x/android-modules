@@ -157,6 +157,9 @@ buildscript {
                     }
                 }
                 if (details.requested.group == "com.google.android.gms") {
+                    if ("${details.requested}".contains("play-services-base")) {
+                        details.useVersion "$vComGoogleAndroidGmsPlayServicesBase"
+                    }
                     if ("${details.requested}".contains("play-services-basement")) {
                         details.useVersion "$vComGoogleAndroidGmsPlayServicesBasement"
                     }
@@ -180,11 +183,6 @@ buildscript {
                 if (details.requested.group == "com.google.errorprone") {
                     if ("${details.requested}".contains("error_prone_annotations")) {
                         details.useVersion "$vComGoogleErrorProneAnnotations"
-                    }
-                }
-                if (details.requested.group == "com.google.protobuf") {
-                    if ("${details.requested}".contains("protobuf-javalite")) {
-                        details.useVersion "$vComGoogleProtobufJavaLite"
                     }
                 }
                 if (details.requested.group == "org.jetbrains") {

@@ -9,7 +9,7 @@ dependencies {
 
     // Firebase
     api(platform("com.google.firebase:firebase-bom:$vFirebaseBom"))
-    api "com.google.firebase:firebase-auth-ktx"
+    api "com.google.firebase:firebase-auth"
 
     // Room
     implementation "androidx.room:room-ktx:$vAndroidxRoom" // Support the suspend function
