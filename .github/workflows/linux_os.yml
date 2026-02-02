@@ -52,6 +52,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
           # AVD Dependencies
+          sudo apt-get update
           sudo apt-get install --no-install-suggests --no-install-recommends mesa-vulkan-drivers libpulse0 -y
 
           export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"

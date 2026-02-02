@@ -1,1 +1,1 @@
-gradle wrapper --gradle-version 8.14.1 --distribution-type all
+gradle wrapper --gradle-version 9.0.0 --distribution-type all
