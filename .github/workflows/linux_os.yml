@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         api-level:
-          - 23
-          # - 24
+          # - 23
+          - 24
           # - 25
           # - 26
           # - 27
@@ -38,7 +38,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
-          java-version: "21"
+          java-version: "25"
           distribution: "jetbrains"
       - name: AVD cache
         uses: actions/cache@v5

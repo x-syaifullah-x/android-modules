@@ -5,7 +5,6 @@ import id.xxx.module.auth.repository.source.remote.response.Response
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import okhttp3.internal.headersContentLength
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
@@ -39,7 +38,7 @@ internal class HttpClient private constructor(private val client: OkHttpClient) 
             header = Header(
                 code = response.code,
                 date = response.headers.getDate("date")?.time ?: 0,
-                contentLength = response.headersContentLength()
+                contentLength = response.headers["Content-Length"]?.toLongOrNull() ?: -1L
             ),
             body = response.body?.byteStream() ?: ByteArrayInputStream(byteArrayOf())
         )
